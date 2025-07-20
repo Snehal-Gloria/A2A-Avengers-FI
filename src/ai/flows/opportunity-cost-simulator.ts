@@ -19,7 +19,7 @@ const OpportunityCostSimulatorInputSchema = z.object({
     ),
   currentSavings: z
     .number()
-    .describe('The current amount of savings the user has.'),
+    .describe('The amount of savings in INR the user has.'),
   investmentReturnRate: z
     .number()
     .describe(
@@ -71,7 +71,7 @@ const prompt = ai.definePrompt({
   Provide a summary of the financial impact of the spending decision, including potential benefits and drawbacks, to help the user make informed decisions about their finances.
 
   Spending Decision: {{{spendingDecision}}}
-Current Savings: {{{currentSavings}}}
+Savings (INR): {{{currentSavings}}}
 Investment Return Rate: {{{investmentReturnRate}}}
 Simulation Years: {{{simulationYears}}}
 

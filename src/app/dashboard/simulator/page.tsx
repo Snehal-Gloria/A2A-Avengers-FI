@@ -63,7 +63,7 @@ export default function SimulatorPage() {
               <Textarea id="spendingDecision" name="spendingDecision" placeholder="e.g., Increase SIP by ₹2000/month, or rent a home at ₹50K/month" required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="currentSavings">Current Savings (₹)</Label>
+              <Label htmlFor="currentSavings">Savings (INR)</Label>
               <Input id="currentSavings" name="currentSavings" type="number" placeholder="50000" required />
             </div>
             <div className="space-y-2">
