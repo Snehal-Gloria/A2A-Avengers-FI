@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -28,6 +30,7 @@ import {
   ChartLegendContent,
 } from "@/components/ui/chart";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Line, LineChart } from "recharts";
+import Link from "next/link";
 
 const spendingData = [
   { category: "Food", spent: 450, budget: 800, color: "hsl(var(--chart-1))" },
