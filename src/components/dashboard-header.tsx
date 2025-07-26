@@ -12,6 +12,7 @@ import {
   PanelLeft,
   Bot,
   Search,
+  Server,
 } from "lucide-react";
 import {
   Breadcrumb,
@@ -38,6 +39,7 @@ const navItems = [
   { href: "/dashboard/eco", icon: Leaf, label: "Eco Mode" },
   { href: "/dashboard/simulator", icon: BarChart, label: "Simulator" },
   { href: "/dashboard/sms-tracker", icon: MessageSquare, label: "SMS Tracker" },
+  { href: "/dashboard/mcp", icon: Server, label: "MCP" },
 ];
 
 export default function DashboardHeader() {

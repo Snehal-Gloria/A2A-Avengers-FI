@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bot, Home, Leaf, BarChart, MessageSquare, LogOut, Settings } from "lucide-react";
+import { Bot, Home, Leaf, BarChart, MessageSquare, LogOut, Settings, Server } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -11,6 +11,7 @@ const navItems = [
   { href: "/dashboard/eco", icon: Leaf, label: "Eco Mode" },
   { href: "/dashboard/simulator", icon: BarChart, label: "Simulator" },
   { href: "/dashboard/sms-tracker", icon: MessageSquare, label: "SMS Tracker" },
+  { href: "/dashboard/mcp", icon: Server, label: "MCP" },
 ];
 
 export default function DashboardSidebar() {
@@ -34,7 +35,7 @@ export default function DashboardSidebar() {
                   href={item.href}
                   className={cn(
                     "flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8",
-                    pathname === item.href && "bg-accent text-accent-foreground"
+                    pathname.startsWith(item.href) && item.href !== "/dashboard" ? "bg-accent text-accent-foreground" : pathname === "/dashboard" && item.href === "/dashboard" ? "bg-accent text-accent-foreground" : ""
                   )}
                 >
                   <item.icon className="h-5 w-5" />

@@ -1,3 +1,4 @@
+// This file is empty for now. It can be used for server-side actions in the future.
 "use server";
 
 import {
