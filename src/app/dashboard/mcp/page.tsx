@@ -163,7 +163,7 @@ function ToolsTab() {
     if (!isConnected) return <p>Please connect to the MCP server first.</p>;
 
     return (
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols gap-6">
             <div className="md:col-span-1">
                 <Card>
                     <CardHeader>
@@ -171,28 +171,33 @@ function ToolsTab() {
                     </CardHeader>
                     <CardContent>
                         {isListLoading ? <Loader2 className="animate-spin" /> : (
-                             <ul className="space-y-2">
-                                {tools.map(tool => (
-                                    <li key={tool.name}>
-                                        <Button
-                                            variant={selectedTool?.name === tool.name ? 'secondary' : 'ghost'}
-                                            className="w-full justify-start text-left h-auto"
-                                            onClick={() => setSelectedTool(tool)}
-                                        >
-                                            <div className="flex flex-col">
-                                                <span className="font-semibold">{tool.name}</span>
-                                                <span className="text-xs text-muted-foreground">{tool.description}</span>
-                                            </div>
-                                        </Button>
-                                    </li>
-                                ))}
+                            <ul className="space-y-2">
+                              {tools.map(tool => (
+                                <li key={tool.name}>
+                                  <Button
+                                    variant={selectedTool?.name === tool.name ? 'secondary' : 'ghost'}
+                                    className="w-full justify-start text-left h-auto"
+                                    onClick={() => setSelectedTool(tool)}
+                                  >
+                                    <div className="flex flex-col w-full">
+                                      <span className="font-semibold">{tool.name}</span>
+                                      <span
+                                        className="text-xs text-muted-foreground break-words max-w-[1360px] whitespace-normal"
+                                        style={{ wordBreak: 'break-word' }}
+                                      >
+                                        {tool.description}
+                                      </span>
+                                    </div>
+                                  </Button>
+                                </li>
+                              ))}
                             </ul>
                         )}
                        
                     </CardContent>
                 </Card>
             </div>
-            <div className="md:col-span-2">
+            {/* <div className="md:col-span-2">
                 <Card>
                     <CardHeader>
                         <CardTitle>Call Tool</CardTitle>
@@ -225,107 +230,107 @@ function ToolsTab() {
                         )}
                     </CardContent>
                 </Card>
-            </div>
+            </div> */}
         </div>
     );
 }
 
-function ResourcesTab() {
-    const { toast } = useToast();
-    const { isConnected } = useMcpSessionStore();
-    const [resources, setResources] = useState<ResourceInfo[]>([]);
-    const [selectedResource, setSelectedResource] = useState<ResourceInfo | null>(null);
-    const [content, setContent] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const [isListLoading, setIsListLoading] = useState(false);
+// function ResourcesTab() {
+//     const { toast } = useToast();
+//     const { isConnected } = useMcpSessionStore();
+//     const [resources, setResources] = useState<ResourceInfo[]>([]);
+//     const [selectedResource, setSelectedResource] = useState<ResourceInfo | null>(null);
+//     const [content, setContent] = useState('');
+//     const [isLoading, setIsLoading] = useState(false);
+//     const [isListLoading, setIsListLoading] = useState(false);
 
-    useEffect(() => {
-        if (isConnected) {
-            setIsListLoading(true);
-            listResources()
-                .then(setResources)
-                .catch(err => toast({ variant: 'destructive', title: 'Error', description: err.message }))
-                .finally(() => setIsListLoading(false));
-        }
-    }, [isConnected, toast]);
+//     useEffect(() => {
+//         if (isConnected) {
+//             setIsListLoading(true);
+//             listResources()
+//                 .then(setResources)
+//                 .catch(err => toast({ variant: 'destructive', title: 'Error', description: err.message }))
+//                 .finally(() => setIsListLoading(false));
+//         }
+//     }, [isConnected, toast]);
 
-    const handleReadResource = async (uri: string) => {
-        setIsLoading(true);
-        setContent('');
-        try {
-            const response = await readResource(uri);
-            if (response.success) {
-                // Try to format if it's JSON
-                try {
-                    const parsed = JSON.parse(response.content);
-                    setContent(JSON.stringify(parsed, null, 2));
-                } catch {
-                    setContent(response.content);
-                }
-            } else {
-                 setContent(`Error: ${response.error}`);
-            }
-        } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Failed to read resource';
-            setContent(`Error: ${errorMessage}`);
-            toast({ variant: 'destructive', title: 'Error', description: errorMessage });
-        } finally {
-            setIsLoading(false);
-        }
-    };
+//     const handleReadResource = async (uri: string) => {
+//         setIsLoading(true);
+//         setContent('');
+//         try {
+//             const response = await readResource(uri);
+//             if (response.success) {
+//                 // Try to format if it's JSON
+//                 try {
+//                     const parsed = JSON.parse(response.content);
+//                     setContent(JSON.stringify(parsed, null, 2));
+//                 } catch {
+//                     setContent(response.content);
+//                 }
+//             } else {
+//                  setContent(`Error: ${response.error}`);
+//             }
+//         } catch (error) {
+//             const errorMessage = error instanceof Error ? error.message : 'Failed to read resource';
+//             setContent(`Error: ${errorMessage}`);
+//             toast({ variant: 'destructive', title: 'Error', description: errorMessage });
+//         } finally {
+//             setIsLoading(false);
+//         }
+//     };
     
-    if (!isConnected) return <p>Please connect to the MCP server first.</p>;
+//     if (!isConnected) return <p>Please connect to the MCP server first.</p>;
 
-    return (
-        <div className="grid md:grid-cols-3 gap-6">
-            <div className="md:col-span-1">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Available Resources</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                         {isListLoading ? <Loader2 className="animate-spin" /> : (
-                            <ul className="space-y-2">
-                                {resources.map(res => (
-                                    <li key={res.uri}>
-                                        <Button
-                                            variant={selectedResource?.uri === res.uri ? 'secondary' : 'ghost'}
-                                            className="w-full justify-start text-left h-auto"
-                                            onClick={() => {
-                                                setSelectedResource(res);
-                                                handleReadResource(res.uri);
-                                            }}
-                                        >
-                                             <div className="flex flex-col">
-                                                <span className="font-semibold break-all">{res.uri}</span>
-                                                <span className="text-xs text-muted-foreground">{res.description}</span>
-                                            </div>
-                                        </Button>
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
-                    </CardContent>
-                </Card>
-            </div>
-            <div className="md:col-span-2">
-                <Card className="min-h-[400px]">
-                    <CardHeader>
-                        <CardTitle>Resource Content</CardTitle>
-                        <CardDescription>{selectedResource ? `Viewing: ${selectedResource.uri}` : 'Select a resource to view its content'}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        {isLoading ? <Loader2 className="animate-spin" /> : (
-                            <pre className="p-2 bg-secondary rounded-md text-sm overflow-auto max-h-96">
-                                <code>{content || 'No content to display.'}</code>
-                            </pre>
-                        )}
-                    </CardContent>
-                </Card>
-            </div>
-        </div>
-    );
-}
+//     return (
+//         <div className="grid md:grid-cols-3 gap-6">
+//             <div className="md:col-span-1">
+//                 <Card>
+//                     <CardHeader>
+//                         <CardTitle>Available Resources</CardTitle>
+//                     </CardHeader>
+//                     <CardContent>
+//                          {isListLoading ? <Loader2 className="animate-spin" /> : (
+//                             <ul className="space-y-2">
+//                                 {resources.map(res => (
+//                                     <li key={res.uri}>
+//                                         <Button
+//                                             variant={selectedResource?.uri === res.uri ? 'secondary' : 'ghost'}
+//                                             className="w-full justify-start text-left h-auto"
+//                                             onClick={() => {
+//                                                 setSelectedResource(res);
+//                                                 handleReadResource(res.uri);
+//                                             }}
+//                                         >
+//                                              <div className="flex flex-col">
+//                                                 <span className="font-semibold break-all">{res.uri}</span>
+//                                                 <span className="text-xs text-muted-foreground">{res.description}</span>
+//                                             </div>
+//                                         </Button>
+//                                     </li>
+//                                 ))}
+//                             </ul>
+//                         )}
+//                     </CardContent>
+//                 </Card>
+//             </div>
+//             <div className="md:col-span-2">
+//                 <Card className="min-h-[400px]">
+//                     <CardHeader>
+//                         <CardTitle>Resource Content</CardTitle>
+//                         <CardDescription>{selectedResource ? `Viewing: ${selectedResource.uri}` : 'Select a resource to view its content'}</CardDescription>
+//                     </CardHeader>
+//                     <CardContent>
+//                         {isLoading ? <Loader2 className="animate-spin" /> : (
+//                             <pre className="p-2 bg-secondary rounded-md text-sm overflow-auto max-h-96">
+//                                 <code>{content || 'No content to display.'}</code>
+//                             </pre>
+//                         )}
+//                     </CardContent>
+//                 </Card>
+//             </div>
+//         </div>
+//     );
+// }
 
 function GeminiChatTab() {
   type Message = {
@@ -337,6 +342,34 @@ function GeminiChatTab() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [loginUrl, setLoginUrl] = useState<string | null>(null);
+  const [toolResult, setToolResult] = useState<any>(null);
+  const [toolLoading, setToolLoading] = useState(false);
+
+  // Automatically trigger /tools/call after connection
+  useEffect(() => {
+    const triggerToolCall = async () => {
+      if (isConnected) {
+        setToolLoading(true);
+        setToolResult(null);
+        setLoginUrl(null);
+        try {
+          // Call /tools/call with dummy query
+          const response = await callTool('fetch_net_worth', {});
+          if (response.login_required && response.login_url) {
+            setLoginUrl(response.login_url);
+          } else {
+            setToolResult(response.result);
+          }
+        } catch (err: any) {
+          setToolResult({ error: err.message });
+        }
+        setToolLoading(false);
+      }
+    };
+    triggerToolCall();
+    // Only run when isConnected changes
+  }, [isConnected]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -377,6 +410,25 @@ function GeminiChatTab() {
       </CardHeader>
       <CardContent>
         <div className="flex flex-col h-[500px]">
+          {/* Show login URL only if response contains login_url and status is login_required */}
+          {toolResult && toolResult.status === 'login_required' && toolResult.login_url && (
+            <div className="mb-4 p-4 bg-secondary rounded shadow flex flex-col items-start">
+              <div className="font-semibold mb-2 text-primary">Authentication Required</div>
+              <Button
+                asChild
+                className="mb-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/80 transition"
+              >
+                <a href={toolResult.login_url} target="_blank" rel="noopener noreferrer">
+                  Open Login Page
+                </a>
+              </Button>
+              <div className="mt-2 text-xs text-muted-foreground">After logging in, return here to continue.</div>
+            </div>
+          )}
+          {/* Tool result if not login required and not login_required status */}
+          {toolResult && toolResult.status !== 'login_required' && (
+            <pre className="mb-4 bg-gray-100 p-2 rounded text-xs max-w-md overflow-x-auto">{JSON.stringify(toolResult, null, 2)}</pre>
+          )}
           <div className="flex-grow overflow-y-auto p-4 space-y-4 border rounded-md">
             {messages.map((msg, index) => (
               <div key={index} className={`flex items-start gap-3 ${msg.role === 'user' ? 'justify-end' : ''}`}>
@@ -391,7 +443,7 @@ function GeminiChatTab() {
                 )}
               </div>
             ))}
-            {isLoading && (
+            {(isLoading || toolLoading) && (
                 <div className="flex items-start gap-3">
                     <div className="p-2 rounded-full bg-primary/20 text-primary"><Bot size={20} /></div>
                     <div className="rounded-lg px-4 py-2 max-w-xs bg-secondary flex items-center">
@@ -438,9 +490,9 @@ export default function McpPage() {
       <TabsContent value="tools">
         <ToolsTab />
       </TabsContent>
-      <TabsContent value="resources">
+      {/* <TabsContent value="resources">
         <ResourcesTab />
-      </TabsContent>
+      </TabsContent> */}
       <TabsContent value="chat">
         <GeminiChatTab />
       </TabsContent>

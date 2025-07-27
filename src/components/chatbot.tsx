@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { financialInsightAgent } from '@/lib/actions';
 import { useToast } from "@/hooks/use-toast"
+import axios from "axios";
 
 type Message = {
   role: 'user' | 'assistant';
@@ -26,11 +27,17 @@ const mockFinancialData = JSON.stringify({
   creditScore: 750,
 });
 
+
 export default function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+
+  // Net worth tool states
+  const [netWorthResult, setNetWorthResult] = useState<any>(null);
+  const [loginUrl, setLoginUrl] = useState<string | null>(null);
+  const [netWorthLoading, setNetWorthLoading] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
@@ -64,9 +71,43 @@ export default function Chatbot() {
     }
   };
 
+  // Net worth tool logic
+  const callNetWorthTool = async () => {
+    setNetWorthLoading(true);
+    setNetWorthResult(null);
+    setLoginUrl(null);
+    try {
+      const res = await axios.post("http://localhost:8000/tools/call", {
+        tool_name: "fetch_net_worth"
+      });
+      if (res.data.login_required && res.data.login_url) {
+        setLoginUrl(res.data.login_url);
+      } else {
+        setNetWorthResult(res.data.result);
+      }
+    } catch (err: any) {
+      setNetWorthResult({ error: err.message });
+    }
+    setNetWorthLoading(false);
+  };
+
+  const handleNetWorthQuery = async () => {
+    setNetWorthLoading(true);
+    try {
+      const res = await axios.post("http://localhost:8000/query", {
+        query: "whats my net worth?"
+      });
+      setNetWorthResult(res.data.response);
+    } catch (err: any) {
+      setNetWorthResult({ error: err.message });
+    }
+    setNetWorthLoading(false);
+  };
+
   return (
     <div className="flex flex-col h-full max-h-[400px]">
       <CardContent className="flex-grow overflow-y-auto p-4 space-y-4">
+        {/* Chatbot messages */}
         {messages.map((msg, index) => (
           <div key={index} className={`flex items-start gap-3 ${msg.role === 'user' ? 'justify-end' : ''}`}>
             {msg.role === 'assistant' && (
@@ -94,6 +135,27 @@ export default function Chatbot() {
                 </div>
             </div>
         )}
+        {/* Net Worth Tool UI */}
+        <div className="mt-4">
+          <Button onClick={callNetWorthTool} disabled={netWorthLoading}>
+            Check Net Worth
+          </Button>
+          {loginUrl && (
+            <div className="mt-2">
+              <p>
+                Please{' '}
+                <a href={loginUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">login here</a>
+                {' '}and then click below:
+              </p>
+              <Button onClick={handleNetWorthQuery} disabled={netWorthLoading} className="mt-2">
+                Continue
+              </Button>
+            </div>
+          )}
+          {netWorthResult && (
+            <pre className="mt-2 bg-gray-100 p-2 rounded text-xs max-w-md overflow-x-auto">{JSON.stringify(netWorthResult, null, 2)}</pre>
+          )}
+        </div>
       </CardContent>
       <div className="p-4 bg-background border-t">
         <form onSubmit={handleSubmit}>
