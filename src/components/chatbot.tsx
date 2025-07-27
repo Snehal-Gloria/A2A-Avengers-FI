@@ -229,42 +229,46 @@ const Chatbot = () => {
     <div className="flex flex-col h-full max-h-[500px]">
       <CardContent className="flex-grow overflow-y-auto p-4 space-y-4">
         {/* MCP Connection UI */}
-        <div className="mb-4 flex items-center gap-2">
+        <div className="mb-6 flex flex-wrap items-center gap-3">
           <span className={`w-3 h-3 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}></span>
-          <span>{isConnected ? `Connected to ${serverUrl}` : 'Not Connected'}</span>
+          <span className="font-medium">{isConnected ? `Connected to MCP` : 'Not Connected'}</span>
           {!isConnected && (
-            <Button onClick={handleConnect} size="sm">Connect MCP</Button>
+            <Button onClick={handleConnect} size="sm" className="ml-2">Connect MCP</Button>
           )}
+          <span className="ml-auto text-xs text-muted-foreground">{isConnected ? serverUrl : ''}</span>
         </div>
+
         {/* Agent selection UI */}
-        <div className="mb-4">
-          <label htmlFor="agent-select" className="font-semibold mr-2">Select Agent:</label>
-            <select
+        <div className="mb-4 flex flex-col md:flex-row md:items-center gap-3">
+          <label htmlFor="agent-select" className="font-semibold min-w-[120px]">Select Agent:</label>
+          <select
             id="agent-select"
             value={selectedAgent}
             onChange={handleAgentChange}
-            className="border rounded px-2 py-1 bg-gray-100 text-black"
-            >
+            className="border rounded-md px-3 py-2 bg-secondary text-foreground min-w-[220px] focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+          >
             {AGENTS.map(agent => (
               <option key={agent.key} value={agent.key}>{agent.label}</option>
             ))}
-            </select>
-          <span className="ml-3 text-xs text-muted-foreground">{AGENTS.find(a => a.key === selectedAgent)?.description}</span>
+          </select>
+          <span className="text-xs text-muted-foreground md:ml-4">{AGENTS.find(a => a.key === selectedAgent)?.description}</span>
         </div>
-        {/* User phone input (auto-filled, editable if needed) */}
-        <div className="mb-4">
-          <label htmlFor="user-phone" className="font-semibold mr-2">User Phone:</label>
-          <input
+
+        {/* User phone input */}
+        <div className="mb-6 flex flex-col md:flex-row md:items-center gap-3">
+          <label htmlFor="user-phone" className="font-semibold min-w-[120px]">User Phone:</label>
+          <Input
             id="user-phone"
             type="text"
             value={userContext.phone}
             onChange={e => setUserContext({ ...userContext, phone: e.target.value })}
-            className="border rounded px-2 py-1 "
+            className="min-w-[220px] px-3 py-2"
             placeholder="Enter phone number"
             autoComplete="tel"
           />
-          <span className="ml-3 text-xs text-muted-foreground">(Auto-fetched from profile, editable)</span>
+          <span className="text-xs text-muted-foreground md:ml-4">(Auto-fetched from profile, editable)</span>
         </div>
+
         {/* Chatbot messages */}
         {messages.map((msg, index) => (
           <div key={index} className={`flex items-start gap-3 ${msg.role === 'user' ? 'justify-end' : ''}`}>
