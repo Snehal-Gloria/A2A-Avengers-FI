@@ -1,0 +1,23 @@
+steps:
+  - name: 'gcr.io/cloud-builders/npm'
+    entrypoint: 'npm'
+    args: ['install']
+
+  - name: 'gcr.io/cloud-builders/npm'
+    entrypoint: 'npm'
+    args: ['run', 'build']
+
+  - name: 'gcr.io/cloud-builders/npm'
+    entrypoint: 'npm'
+    args: ['run', 'start']
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: [
+      'run', 'deploy', 'a2a-avengers-ui',
+      '--source=.', 
+      '--region=us-central1',
+      '--platform=managed',
+      '--allow-unauthenticated'
+    ]
+
+timeout: 900s
