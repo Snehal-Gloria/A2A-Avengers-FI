@@ -425,9 +425,9 @@ function GeminiChatTab() {
               <div className="mt-2 text-xs text-muted-foreground">After logging in, return here to continue.</div>
             </div>
           )}
-          {/* Tool result if not login required and not login_required status */}
-          {toolResult && toolResult.status !== 'login_required' && (
-            <pre className="mb-4 bg-gray-100 p-2 rounded text-xs max-w-md overflow-x-auto">{JSON.stringify(toolResult, null, 2)}</pre>
+          {/* Only show tool result if it contains a meaningful result (not just raw JSON) */}
+          {toolResult && toolResult.status !== 'login_required' && toolResult.result && typeof toolResult.result === 'string' && toolResult.result.startsWith('http') && (
+            <pre className="mb-4 bg-gray-100 p-2 rounded text-xs max-w-md overflow-x-auto">{toolResult.result}</pre>
           )}
           <div className="flex-grow overflow-y-auto p-4 space-y-4 border rounded-md">
             {messages.map((msg, index) => (
@@ -481,7 +481,7 @@ export default function McpPage() {
       <TabsList className="grid w-full grid-cols-4">
         <TabsTrigger value="status"><Server className="w-4 h-4 mr-2"/>Status</TabsTrigger>
         <TabsTrigger value="tools"><Network className="w-4 h-4 mr-2"/>Tools</TabsTrigger>
-        <TabsTrigger value="resources"><FileCode className="w-4 h-4 mr-2"/>Resources</TabsTrigger>
+        {/* <TabsTrigger value="resources"><FileCode className="w-4 h-4 mr-2"/>Resources</TabsTrigger> */}
         <TabsTrigger value="chat"><MessageCircle className="w-4 h-4 mr-2"/>Gemini Chat</TabsTrigger>
       </TabsList>
       <TabsContent value="status">
