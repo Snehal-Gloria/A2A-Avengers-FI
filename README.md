@@ -5,6 +5,7 @@ This is a NextJS starter in Firebase Studio.
 To get started, take a look at src/app/page.tsx.
 
 
+
 ## 📘 Eco-Fi App
 
 **Eco-Fi** is a smart financial assistant platform designed to provide users with actionable financial insights, automated budgeting, and eco-conscious travel suggestions.
@@ -54,6 +55,4 @@ npm start
 Test login-
 test@mail.com
 12345
-
-
 
